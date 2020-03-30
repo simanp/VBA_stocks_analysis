@@ -1,0 +1,81 @@
+Sub stock_analysis()
+           Dim ws As Worksheet
+           For Each ws In ThisWorkbook.Worksheets
+               ws.Cells(1, 9).Value = "Ticker"
+               ws.Cells(1, 10).Value = "Yearly Changed"
+               ws.Cells(1, 11).Value = "Percent Changed"
+               ws.Cells(1, 12).Value = "Total Stock Volume"
+               Dim Tck As String
+               Tck = ws.Cells(2, 1).Value
+               Dim year_change As Double
+               year_open = ws.Cells(2, 3).Value
+               Dim year_close As Double
+               Dim percent_change As Double
+               Dim total As Double
+              total = ws.Cells(2, 7).Value
+              LastRow = ws.Cells(Rows.Count, "A").End(xlUp).Row
+              Dim RowCount As Double
+              RowCount = 2
+              For i = 2 To LastRow - 1
+                    If ws.Cells(i, 1).Value = ws.Cells(i + 1, 1).Value Then
+                        total = total + ws.Cells(i + 1, 7).Value
+                    Else
+                          year_close = ws.Cells(i, 6).Value
+                          year_change = year_close - year_open
+                          ws.Cells(RowCount, 9).Value = Tck
+                          ws.Cells(RowCount, 10).Value = year_change
+                      If year_open <> 0 Then
+                          percent_change = year_change / year_open
+                          ws.Cells(RowCount, 11).Value = percent_change
+                      Else
+                          Dim percent_change_NA As String
+                          ws.Cells(RowCount, 11).Value = "New Stock"
+                      End If
+                      If year_change > 0 Then
+                          ws.Cells(RowCount, 10).Interior.ColorIndex = 4
+                      Else
+                          ws.Cells(RowCount, 10).Interior.ColorIndex = 3
+                      End If
+                      ws.Cells(RowCount, 12).Value = total
+                      Tck = ws.Cells(i + 1, 1).Value
+                      year_open = ws.Cells(i + 1, 3).Value
+                      total = ws.Cells(i + 1, 7).Value
+                      RowCount = RowCount + 1
+                End If
+           Next i
+           
+           ws.Cells(2, 15).Value = "Ticker"
+           ws.Cells(3, 15).Value = "Yearly Changed"
+           ws.Cells(4, 15).Value = "Percent Changed"
+           ws.Cells(1, 16).Value = "Ticker"
+           ws.Cells(1, 17).Value = "Value"
+           greatest_increase = ws.Cells(2, 11).Value
+           Dim greateset_decrease As Double
+           greateset_decrease = ws.Cells(2, 11).Value
+           Dim greatest_total As Double
+           greatest_total = ws.Cells(2, 12).Value
+           newlast = ws.Cells(Rows.Count, "I").End(xlUp).Row
+           For i = 2 To newlast - 1
+               If ws.Cells(i, 11).Value > greatest_increase Then
+                   greatest_increase = ws.Cells(i, 11).Value
+                   t1 = ws.Cells(i, 9).Value
+               End If
+               If ws.Cells(i, 11).Value < greatest_decrease Then
+                   greatest_decrease = ws.Cells(i, 11).Value
+                   t2 = ws.Cells(i, 9).Value
+               End If
+               If ws.Cells(i, 12).Value > greatest_total Then
+                   greatest_total = ws.Cells(i, 12).Value
+                   t3 = ws.Cells(i, 9).Value
+               End If
+            Next i
+            ws.Cells(2, 16).Value = t1
+            ws.Cells(2, 17).Value = greatest_increase
+            ws.Cells(3, 16).Value = t2
+            ws.Cells(3, 17).Value = greatest_decrease
+            ws.Cells(4, 16).Value = t3
+            ws.Cells(4, 17).Value = greatest_total
+            
+            Next ws
+               
+End Sub
